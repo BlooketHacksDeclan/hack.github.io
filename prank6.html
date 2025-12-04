@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mac System Alert</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: monospace;
+    background: black;
+    color: #0aff0a;
+    overflow: hidden;
+    text-align: center;
+  }
+  /* Mac-style top bar */
+  #topbar {
+    width: 100%; height: 30px;
+    background: #222;
+    color: #fff;
+    display: flex; align-items: center; padding-left: 10px;
+    font-size: 14px;
+    z-index: 10;
+  }
+  #warning {
+    font-size: 2.5em;
+    color: red;
+    animation: flash 0.5s infinite alternate;
+    margin-top: 50px;
+    z-index: 10;
+    position: relative;
+  }
+  @keyframes flash { from {opacity:0.3;} to {opacity:1;} }
+
+  #progressContainer {
+    width: 70%;
+    height: 25px;
+    border: 2px solid red;
+    margin: 30px auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #111;
+    z-index: 10;
+    position: relative;
+  }
+  #progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff0000, #ff5500);
+  }
+
+  #matrix {
+    position: absolute;
+    top: 30px; left: 0;
+    width: 100%; height: calc(100% - 30px);
+    pointer-events: none;
+    color: rgba(0,255,0,0.15);
+    font-size: 12px;
+    white-space: pre;
+    z-index: 1;
+  }
+
+  #terminal {
+    position: absolute;
+    top: 60px; left: 5%;
+    width: 90%;
+    height: 60%;
+    background: rgba(0,0,0,0.8);
+    color: #00ff00;
+    font-family: monospace;
+    font-size: 14px;
+    overflow: hidden;
+    text-align: left;
+    padding: 10px;
+    z-index: 5;
+    border: 1px solid #0f0;
+    box-shadow: 0 0 10px red;
+  }
+
+  #quarantineBtn {
+    margin-top: 30px;
+    font-size: 1.3em;
+    padding: 12px 25px;
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    z-index: 10;
+    position: relative;
+  }
+
+  #reveal, #monkey {
+    display: none;
+    margin-top: 40px;
+    font-size: 2em;
+    color: yellow;
+    z-index: 10;
+    position: relative;
+  }
+
+  .glitch {
+    animation: glitch 0.3s infinite;
+  }
+  @keyframes glitch {
+    0% { transform: translate(0px,0px); }
+    25% { transform: translate(2px,-2px); }
+    50% { transform: translate(-2px,2px); }
+    75% { transform: translate(2px,2px); }
+    100% { transform: translate(0px,-2px); }
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">Mac Security Alert | Hacker Breach Detected</div>
+
+<audio id="alarm" loop>
+  <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
+<div id="warning" class="glitch">⚠️ SYSTEM BREACH DETECTED ⚠️</div>
+<p>Critical security violation detected. Lab specimen OMEGA-AP3 uncontrolled.</p>
+
+<div id="progressContainer">
+  <div id="progressBar"></div>
+</div>
+
+<button id="quarantineBtn">QUARANTINE NOW</button>
+
+<div id="matrix"></div>
+<div id="terminal"></div>
+
+<div id="reveal">😜 THIS IS A PRANK! 😜</div>
+<div id="monkey">
+    <img src="https://media.tenor.com/3CLk8a-Rg2EAAAAM/monkey-dance.gif" width="300"><br>
+    🐒🪩 MONKEYS HAVE ESCAPED! 🪩🐒
+</div>
+
+<script>
+// Matrix effect
+const matrix = document.getElementById("matrix");
+let text = "";
+for (let i=0; i<2000; i++){
+  text += Math.random() > 0.97 ? "🐒" : "01"[Math.floor(Math.random()*2)];
+}
+matrix.textContent = text;
+
+// Progress bar animation
+const progressBar = document.getElementById("progressBar");
+let width = 0;
+const progressInterval = setInterval(() => {
+  width += Math.random()*2;
+  if(width >= 100) width = 100;
+  progressBar.style.width = width + "%";
+}, 100);
+
+// Alarm
+const alarm = document.getElementById("alarm");
+alarm.volume = 1.0;
+alarm.play().catch(e => {});
+
+// Fake terminal logs
+const terminal = document.getElementById("terminal");
+const fakeLogs = [
+  "ACCESSING /Users/admin/Documents/confidential.txt",
+  "WARNING: REMOTE LOGIN ATTEMPT DETECTED",
+  "SCANNING SYSTEM32/CRITICAL_FILES",
+  "INTRUSION DETECTED: OMEGA-AP3",
+  "BACKUP FAILED",
+  "SECURITY PROTOCOL BREACHED",
+  "FILE MONKEY_PROTOCOL_INITIATED",
+  "SCANNING /Applications/TopSecretLab.app",
+  "FIREWALL BYPASS ATTEMPTED",
+  "ENCRYPTION MODULE ONLINE",
+  "ERROR 0xDEADBEEF",
+  "ANOMALY DETECTED IN /tmp/banana_logs",
+  "INITIATING MONKEY CONTAINMENT PROTOCOL",
+  "WARNING: UNAUTHORIZED FILE ACCESS"
+];
+let logIndex = 0;
+setInterval(()=>{
+  terminal.textContent += fakeLogs[Math.floor(Math.random()*fakeLogs.length)] + "\n";
+  terminal.scrollTop = terminal.scrollHeight;
+}, 250);
+
+// Quarantine button click -> reveal + redirect
+document.getElementById("quarantineBtn").onclick = () => {
+  alarm.pause();
+  document.getElementById("warning").style.display = "none";
+  document.getElementById("progressContainer").style.display = "none";
+  document.getElementById("quarantineBtn").style.display = "none";
+  document.getElementById("matrix").style.display = "none";
+  document.getElementById("terminal").style.display = "none";
+
+  const reveal = document.getElementById("reveal");
+  const monkey = document.getElementById("monkey");
+
+  reveal.style.display = "block";
+
+  setTimeout(()=> {
+    monkey.style.display = "block";
+  }, 1500);
+
+  // Redirect after 4 seconds to a funny monkey picture
+  setTimeout(()=> {
+    window.location.href = "https://media.cnn.com/api/v1/images/stellar/prod/160107100400-monkey-selfie.jpg?q=w_2912,h_1638,x_0,y_0,c_fill";
+  }, 4500);
+};
+</script>
+
+</body>
+</html>
